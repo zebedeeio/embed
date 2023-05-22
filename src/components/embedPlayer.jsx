@@ -111,66 +111,53 @@ export default function EmbedPlayer(props) {
               paymentRequest={paymentRequest}
             />
           </div>
-          <div className="grid max-w-xl grid-cols-1 grid-rows-2 space-x-1 space-y-1 rounded-xl bg-brand-black xs:grid-rows-3">
+          <div className="grid max-w-xl grid-cols-1 grid-rows-2 zbd-player-wrapper xs:grid-rows-3">
             {/* IMAGE CONTAINER */}
-            <div className="row-span-2 mx-auto my-2 flex justify-start px-2 xs:my-auto">
+            <div className="row-span-2 mx-auto my-2 flex justify-start px-2 xs:my-auto zbd-player-image-wrapper">
               <Image
                 src={trackData[currentTrackIndex].artworkUrl}
                 // layout={'fixed'}
                 width={200}
                 height={200}
+                className="zbd-player-image"
               />
             </div>
 
             {/* TRACK METADATA & CONTROLS */}
             <div className="row-span-1 grid grid-rows-1 px-2 pb-3">
               {/* ROW 1 */}
-              <div className="row-span-1 mt-1 tracking-tighter text-white">
+              <div className="zbd-player-text-content-wrapper">
                 <a
                   href={`${shareUrl}/track/${trackData[currentTrackIndex].id}`}
                   target={"_blank"}
                   rel={"noreferrer"}
                   className="flex items-center"
                 >
-                  <p className="text-sm font-semibold">
+                  <p className="zbd-player-title">
                     {trackData[currentTrackIndex].title}
                   </p>
                 </a>
-                <p className="mt-1 flex text-xs">
+                <p className="zbd-player-artist">
                   by {trackData[currentTrackIndex].artist}
                 </p>
-                {/* PROGRESS BAR */}
-                <div className="my-2 border-b-2 border-brand-pink" ref={ref} />
-                {/* Overlay */}
-                <div
-                  className="relative z-10 -translate-y-2.5 border-b-2 border-brand-pink-dark"
-                  style={{
-                    width: `${trackProgress}%`,
-                    transitionProperty: "width",
-                    transitionDuration: "0.5s",
-                    transitionTimingFunction: "linear",
-                  }}
-                />
               </div>
 
               {/* ROW 2 */}
-              <div className="row-span-1 grid grid-cols-7 items-center">
-                <div className="col-span-1 flex items-center justify-self-start">
-                  <div onClick={() => setIsPlaying(!isPlaying)}>
-                    <EmbedPlayButton isPlaying={isPlaying} />
-                  </div>
-                  {trackData.length > 1 && (
-                    <div
-                      onClick={() => {
-                        if (currentTrackIndex < trackDataLength) {
-                          setCurrentTrackIndex(currentTrackIndex + 1);
-                        }
-                      }}
-                    >
-                      <EmbedForwardButton />
-                    </div>
-                  )}
+              <div className="zbd-player-controls-wrapper">
+                <div onClick={() => setIsPlaying(!isPlaying)}>
+                  <EmbedPlayButton isPlaying={isPlaying} />
                 </div>
+                {/* {trackData.length > 1 && (
+                  <div
+                    onClick={() => {
+                      if (currentTrackIndex < trackDataLength) {
+                        setCurrentTrackIndex(currentTrackIndex + 1);
+                      }
+                    }}
+                  >
+                    <EmbedForwardButton />
+                  </div>
+                )} */}
                 <Transition
                   show={viewForm}
                   enter="transition-opacity duration-200"
@@ -210,20 +197,34 @@ export default function EmbedPlayer(props) {
                     </form>
                   </div>
                 </Transition>
-                <div
+                {/* <div
                   className={`${!viewForm ? "col-span-4 flex" : "hidden"}`}
                   onClick={() => setViewForm(!viewForm)}
                 >
                   <BoostIcon className="h-9 cursor-pointer fill-brand-black-light hover:fill-brand-pink-light" />
-                </div>
-                <div className="col-span-2 flex cursor-pointer justify-self-end">
+                </div> */}
+                <div className="zbd-player-wl-logo-wrapper">
                   <a
                     href={`${shareUrl}/track/${trackData[currentTrackIndex].id}`}
                     target={"_blank"}
                     rel={"noreferrer"}
                   >
-                    <LogoIcon className="flex h-8 fill-white" />
+                    <LogoIcon className="flex h-8 zbd-player-wl-logo" />
                   </a>
+                </div>
+                <div className='zbd-player-progress-bar-wrapper'>
+                  {/* PROGRESS BAR */}
+                  <div className="zbd-player-progress-bar" ref={ref} />
+                  {/* Overlay */}
+                  <div
+                    className="zbd-player-progress-bar-active"
+                    style={{
+                      width: `${trackProgress}%`,
+                      transitionProperty: "width",
+                      transitionDuration: "0.5s",
+                      transitionTimingFunction: "linear",
+                    }}
+                  />
                 </div>
                 <Transition
                   show={!viewForm}

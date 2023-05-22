@@ -5,12 +5,12 @@ export default function Layout({ children }) {
   return (
     <>
       <DefaultSeo
-        title="Wavlake • Player"
+        title="ZBD - WavLake Player"
         openGraph={{
           type: "website",
           locale: "en_IE",
-          url: "https://wavlake.com/",
-          siteName: "Wavlake • Player",
+          url: "https://zbd.gg/",
+          siteName: "ZBD - WavLake Player",
           description: "Turn up the value ⚡️",
           images: [
             {
@@ -23,7 +23,7 @@ export default function Layout({ children }) {
           ],
         }}
         twitter={{
-          site: "@wavlake",
+          site: "@zbd_play",
           cardType: "summary_large_image",
         }}
       />
