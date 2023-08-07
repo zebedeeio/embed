@@ -12,7 +12,8 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPlayer from "react-player";
 
-const shareUrl = process.env.NEXT_PUBLIC_DOMAIN_URL;
+// const shareUrl = process.env.NEXT_PUBLIC_DOMAIN_URL; // legacy
+const shareUrl = 'https://wavlake.com'; // wavlake.com
 
 export default function EmbedPlayer(props) {
   const ref = useRef(null);
