@@ -1,3 +1,7 @@
+# Wavlake Player for the ZBD app
+
+This is the repository that loads wav.zbd.gg and allows for iframe-ing of the player inside Social posts inside ZBD app.
+
 ## Getting Started
 
 First, install packages:
