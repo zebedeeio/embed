@@ -53,17 +53,15 @@
   margin-left: 14px;
 }
 
-.zbd-player-progress-bar {
-  flex: 1;
-  border: 3px solid #656672;
-  border-radius: 3px;
-}
-
-.zbd-player-progress-bar-active {
+.zbd-player-bar {
+  background-color: #2C2D3C;
+  height: 2px;
+  z-index: 2;
   position: absolute;
-  border: 3px solid #916EF7;
-  border-radius: 3px;
+  width: 100%;
   left: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .zbd-player-title {
@@ -93,4 +91,8 @@
 .zbd-player-text-content-wrapper {
   padding-left: 15px;
   padding-bottom: 15px;
+}
+
+.zbd-player-waveform {
+  width: 100%;
 }
