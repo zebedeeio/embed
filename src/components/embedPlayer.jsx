@@ -10,18 +10,23 @@ import { Transition } from "@headlessui/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import ReactPlayer from "react-player";
+import WaveSurfer from "wavesurfer.js";
 
 // const shareUrl = process.env.NEXT_PUBLIC_DOMAIN_URL; // legacy
 const shareUrl = 'https://wavlake.com'; // wavlake.com
 
 export default function EmbedPlayer(props) {
-  const ref = useRef(null);
+  const wavesurferRef = useRef(null);
+  const waveformRef = useRef(null);
+
+  const handlePlayPause = () => {
+    wavesurferRef.current && wavesurferRef.current.playPause();
+    setIsPlaying((prevIsPlaying) => !prevIsPlaying);
+  };
 
   // Hydration fix for ReactPlayer & React 18
   const [hasWindow, setHasWindow] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [trackProgress, setTrackProgress] = useState(0);
   const [viewForm, setViewForm] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [webLnAvailable, setWebLnAvailable] = useState(true);
@@ -30,6 +35,31 @@ export default function EmbedPlayer(props) {
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
 
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+
+  useEffect(() => {
+    wavesurferRef.current = WaveSurfer.create({
+      container: waveformRef.current,
+      waveColor: "#ffffff",
+      progressColor: "#916ef7",
+      barWidth: 2,
+      cursorWidth: 0,
+      height: 70,
+      barGap: 1,
+    });
+
+    // Load the current track
+    wavesurferRef.current.load(trackData[currentTrackIndex].liveUrl);
+
+    wavesurferRef.current.on('finish', () => {
+      wavesurferRef.current.stop(); // Stops the audio
+      wavesurferRef.current.seekTo(0); // Resets the waveform
+      setIsPlaying(false); // Updates the play button state
+    });
+
+    return () => {
+      wavesurferRef.current && wavesurferRef.current.destroy();
+    };
+  }, [currentTrackIndex]);
 
   const {
     register,
@@ -44,9 +74,6 @@ export default function EmbedPlayer(props) {
     }
     if (typeof window.webln === "undefined") {
       setWebLnAvailable(false);
-    }
-    if (ref.current) {
-      setWidth(ref.current.offsetWidth);
     }
   }, []);
 
@@ -145,7 +172,7 @@ export default function EmbedPlayer(props) {
 
               {/* ROW 2 */}
               <div className="zbd-player-controls-wrapper">
-                <div onClick={() => setIsPlaying(!isPlaying)}>
+                <div onClick={handlePlayPause} className="self-center">
                   <EmbedPlayButton isPlaying={isPlaying} />
                 </div>
                 {/* {trackData.length > 1 && (
@@ -214,17 +241,12 @@ export default function EmbedPlayer(props) {
                   </a>
                 </div>
                 <div className='zbd-player-progress-bar-wrapper'>
-                  {/* PROGRESS BAR */}
-                  <div className="zbd-player-progress-bar" ref={ref} />
-                  {/* Overlay */}
                   <div
-                    className="zbd-player-progress-bar-active"
-                    style={{
-                      width: `${trackProgress}%`,
-                      transitionProperty: "width",
-                      transitionDuration: "0.5s",
-                      transitionTimingFunction: "linear",
-                    }}
+                    ref={waveformRef}
+                    className="zbd-player-waveform"
+                  />
+                  <div
+                    className="zbd-player-bar"
                   />
                 </div>
                 <Transition
@@ -243,18 +265,6 @@ export default function EmbedPlayer(props) {
         </div>
       ) : (
         <NoExist />
-      )}
-      {hasWindow && trackData.length > 0 && (
-        <ReactPlayer
-          controls={false}
-          url={trackData[currentTrackIndex].liveUrl}
-          playing={isPlaying}
-          height="0"
-          width="0"
-          onProgress={(progress) => {
-            setTrackProgress(progress.played * 100);
-          }}
-        />
       )}
     </>
   );
