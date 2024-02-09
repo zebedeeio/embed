@@ -29,8 +29,6 @@ export default function EmbedPlayer(props) {
   const [paymentRequest, setPaymentRequest] = useState("");
   const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
 
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-
   const {
     register,
     handleSubmit,
@@ -51,8 +49,6 @@ export default function EmbedPlayer(props) {
   }, []);
 
   const { trackData } = props;
-
-  const trackDataLength = trackData.length - 1;
 
   async function handleBoost(data) {
     try {
@@ -102,7 +98,7 @@ export default function EmbedPlayer(props) {
 
   return (
     <>
-      {trackData.length > 0 ? (
+      {trackData.success ? (
         <div>
           <div className="absolute top-1 left-0 right-1 z-20 m-auto">
             <FundingInvoiceModal
@@ -116,7 +112,7 @@ export default function EmbedPlayer(props) {
             {/* IMAGE CONTAINER */}
             <div className="row-span-2 mx-auto my-2 flex justify-start px-2 xs:my-auto zbd-player-image-wrapper">
               <Image
-                src={trackData[currentTrackIndex].artworkUrl}
+                src={trackData.data.artworkUrl}
                 // layout={'fixed'}
                 width={200}
                 height={200}
@@ -129,17 +125,17 @@ export default function EmbedPlayer(props) {
               {/* ROW 1 */}
               <div className="zbd-player-text-content-wrapper">
                 <a
-                  href={`${shareUrl}/track/${trackData[currentTrackIndex].id}`}
+                  href={`${shareUrl}/track/${trackData.data.id}`}
                   target={"_blank"}
                   rel={"noreferrer"}
                   className="flex items-center"
                 >
                   <p className="zbd-player-title">
-                    {trackData[currentTrackIndex].title}
+                    {trackData.data.title}
                   </p>
                 </a>
                 <p className="zbd-player-artist">
-                  by {trackData[currentTrackIndex].artist}
+                  by {trackData.data.artist}
                 </p>
               </div>
 
@@ -148,17 +144,6 @@ export default function EmbedPlayer(props) {
                 <div onClick={() => setIsPlaying(!isPlaying)}>
                   <EmbedPlayButton isPlaying={isPlaying} />
                 </div>
-                {/* {trackData.length > 1 && (
-                  <div
-                    onClick={() => {
-                      if (currentTrackIndex < trackDataLength) {
-                        setCurrentTrackIndex(currentTrackIndex + 1);
-                      }
-                    }}
-                  >
-                    <EmbedForwardButton />
-                  </div>
-                )} */}
                 <Transition
                   show={viewForm}
                   enter="transition-opacity duration-200"
@@ -172,7 +157,7 @@ export default function EmbedPlayer(props) {
                       onSubmit={handleSubmit((data) =>
                         handleBoost({
                           ...data,
-                          trackId: trackData[currentTrackIndex].id,
+                          trackId: trackData.data.id,
                         })
                       )}
                     >
@@ -206,7 +191,7 @@ export default function EmbedPlayer(props) {
                 </div> */}
                 <div className="zbd-player-wl-logo-wrapper">
                   <a
-                    href={`${shareUrl}/track/${trackData[currentTrackIndex].id}`}
+                    href={`${shareUrl}/track/${trackData.data.id}`}
                     target={"_blank"}
                     rel={"noreferrer"}
                   >
@@ -244,10 +229,10 @@ export default function EmbedPlayer(props) {
       ) : (
         <NoExist />
       )}
-      {hasWindow && trackData.length > 0 && (
+      {hasWindow && trackData.success && (
         <ReactPlayer
           controls={false}
-          url={trackData[currentTrackIndex].liveUrl}
+          url={trackData.data.liveUrl}
           playing={isPlaying}
           height="0"
           width="0"
